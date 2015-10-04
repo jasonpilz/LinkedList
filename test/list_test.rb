@@ -10,14 +10,16 @@ class ListTest < Minitest::Test
     @node4 = LinkedList::Node.new(4)
   end
 
+
   def test_empty_list_has_nil_as_head
-    @list
-    assert_equal nil, @list.head
+    list = LinkedList::List.empty
+    assert_equal nil, list.head
   end
 
   def test_can_append_a_node_as_head_to_empty_list
-    @list.append(@node2)
-    assert_equal @node2, @list.head
+    list = LinkedList::List.empty
+    list.append(@node2)
+    assert_equal @node2, list.head
   end
 
   def test_can_append_a_node_to_another_node
@@ -55,8 +57,9 @@ class ListTest < Minitest::Test
   end
 
   def test_can_insert_a_node_at_higher_index_than_list_length_returns_error
-    @list
-    assert_equal "Can't insert at that index", @list.insert(@node2, 2)
+    assert_raises "Can't insert at that index" do
+      @list.insert(@node2, 2)
+    end
   end
 
   def test_can_insert_a_node_to_a_list_at_arbitrary_position
@@ -110,15 +113,9 @@ class ListTest < Minitest::Test
     assert_equal 0, @list.count
   end
 
-  def test_count_list_with_1_node
-    @list
+  def test_count_a_non_empty_list
     @list.append(@node1)
     assert_equal 1, @list.count
-  end
-
-  def test_count_list_with_2_nodes
-    @list
-    @list.append(@node1)
     @list.append(@node2)
     assert_equal 2, @list.count
   end
@@ -152,18 +149,14 @@ class ListTest < Minitest::Test
     assert_equal "List is empty-no data", @list.find_by_index(0)
   end
 
-  def test_can_find_value_by_index_in_list_with_1_node
-    @list
-    @list.append(@node1)
-    assert_equal 1, @list.find_by_index(0)
-  end
-
   def test_can_find_value_by_index_in_list_with_3_nodes
     @list
     @list.append(@node1)
-    @list.append(@node2)
     @list.append(@node3)
-    assert_equal 3, @list.find_by_index(2)
+    @list.append(@node2)
+    assert_equal 1, @list.find_by_index(0)
+    assert_equal 3, @list.find_by_index(1)
+    assert_equal 2, @list.find_by_index(2)
   end
 
   def test_can_fin_position_by_value_in_empty_list

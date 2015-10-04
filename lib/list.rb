@@ -2,8 +2,12 @@ require_relative './node.rb'
 
 module LinkedList
   class List
-
     attr_accessor :head
+
+    # Revision for the benefit of the tests
+    def self.empty
+      new
+    end
 
     def initialize(head = nil)
       @head = head
@@ -13,11 +17,7 @@ module LinkedList
       if @head.nil?
         @head = node
       else
-        here = @head
-        until here.tail?
-          here = here.next
-        end
-        here.next = node
+        last_node.next = node
       end
     end
 
@@ -38,37 +38,28 @@ module LinkedList
         if index == 0
           @head = node
         else
-          "Can't insert at that index"
+          raise "Can't insert at that index"
         end
       elsif index == 0
         node.next = @head
         @head = node
       else
         counter = 0
-        # Current has to be the node before the node at index we want to insert at
         current = @head
         until (counter + 1) == index
           counter += 1
           current = current.next
         end
-        # Assign node.next to current.next
         node.next = current.next
-        # Reassign current.next to node
         current.next = node
       end
     end
 
     def includes?(value) # gives back true or false if the supplied value is in the list
-      return false if @head.nil?
-      current = @head
-      until current.tail?
-        if current.data == value
-          return true
-        else
-          current = current.next
-        end
+      each do |node|
+        return true if node.data == value
       end
-      return false
+      false
     end
 
     def pop # an element from the end of the list
@@ -86,15 +77,9 @@ module LinkedList
     end
 
     def count # the number of elements in the list
-      if @head == nil
-        return 0
-      else
-        count = 1
-        current = @head
-        until current.tail?
-          count += 1
-          current = current.next
-        end
+      count = 0
+      each do
+        count += 1
       end
       count
     end
@@ -111,11 +96,7 @@ module LinkedList
       if @head == nil
         "List is empty-no data"
       else
-        current = @head
-        until current.tail?
-          current = current.next
-        end
-        current.data
+        last_node.data
       end
     end
 
@@ -158,6 +139,24 @@ module LinkedList
     # def remove_by_value(value) # removes the first occurrence of the specified value
     #
     # end
+
+    private
+
+    def each
+      current = @head
+      until current.nil?
+        yield current
+        current = current.next
+      end
+    end
+
+    def last_node
+      current = @head
+      until current.tail?
+        current = current.next
+      end
+      current
+    end
 
   end
 end
